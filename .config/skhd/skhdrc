@@ -1,0 +1,86 @@
+########################################################################
+#
+#       ███████╗██╗  ██╗██╗  ██╗██████╗ ██████╗  ██████╗
+#       ██╔════╝██║ ██╔╝██║  ██║██╔══██╗██╔══██╗██╔════╝
+#       ███████╗█████╔╝ ███████║██║  ██║██████╔╝██║     
+#       ╚════██║██╔═██╗ ██╔══██║██║  ██║██╔══██╗██║     
+#       ███████║██║  ██╗██║  ██║██████╔╝██║  ██║╚██████╗
+#       ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝
+#
+########################################################################
+
+
+# Changing focus
+lalt - j            :   yabai -m window     --focus     south
+lalt - k            :   yabai -m window     --focus     north
+lalt - h            :   yabai -m window     --focus     west
+lalt - l            :   yabai -m window     --focus     east
+
+# Moving windows around
+lshift + lalt - j   :   yabai -m window     --swap      south
+lshift + lalt - k   :   yabai -m window     --swap      north
+lshift + lalt - h   :   yabai -m window     --swap      west 
+lshift + lalt - l   :   yabai -m window     --swap      east 
+
+lshift + lalt - d   :   yabai -m window     --display   east ;\
+                        yabai -m display    --focus     south
+lshift + lalt - f   :   yabai -m window     --display   east ;\
+                        yabai -m display    --focus     north
+
+# Conflicting keybindings
+#lshift + lalt - s   :   yabai -m window     --display   west ;\
+#                        yabai -m display    --focus     west
+#lshift + lalt - g   :   yabai -m window     --display   east ;\
+#                        yabai -m display    --focus     east
+
+lshift + lalt - p   :   yabai -m window     --space     prev
+lshift + lalt - n   :   yabai -m window     --space     next
+
+lshift + lalt - 1   :   yabai -m window     --space     1
+lshift + lalt - 2   :   yabai -m window     --space     2
+lshift + lalt - 3   :   yabai -m window     --space     3
+lshift + lalt - 4   :   yabai -m window     --space     4
+lshift + lalt - 5   :   yabai -m window     --space     5
+lshift + lalt - 6   :   yabai -m window     --space     6
+
+# Modifying the Layout
+lshift + lalt - m   :   yabai -m window     --toggle    zoom-fullscreen
+lshift + lalt - t   :   yabai -m window     --toggle    float --grid 4:4:1:1:2:2
+lshift + lalt - y   :   yabai -m space      --mirror    y-axis
+lshift + lalt - x   :   yabai -m space      --mirror    x-axis
+lshift + lalt - r   :   yabai -m space      --rotate    270
+lshift + lalt - e   :   yabai -m space      --balance
+lshift + lalt - g   :   yabai -m space      --toggle    padding ;\
+                        yabai -m space      --toggle    gap ;\
+                        hs -c 'stackline.config:toggle("appearance.showIcons")'
+
+# Stack Navigation PS: Still not working perfectly
+lshift + lalt - s   :   yabai -m space      --layout \
+                        $( [ "$(yabai -m query --spaces --space | jq -re .type)" = 'bsp' ] && echo 'stack' || echo 'bsp' )
+# https://github.com/AdamWagner/stackline/issues/70
+
+lalt - tab          :   yabai -m query      --spaces    --space \
+                      | jq -re ".index" \
+                      | xargs -I{} yabai -m query --windows --space {} \
+                      | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, ."stack-index", .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $array_length - 1 > $has_index then nth($has_index + 1).id else nth(0).id end' \
+                      | xargs -I{} yabai -m window --focus {}
+
+lshift + lalt - tab :   yabai -m query      --spaces    --space \
+                      | jq -re ".index" \
+                      | xargs -I{} yabai -m query --windows --space {} \
+                      | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $has_index > 0 then nth($has_index - 1).id else nth($array_length - 1).id end' \
+                      | xargs -I{} yabai -m window --focus {}
+# https://github.com/koekeishiya/yabai/issues/203
+
+#lshift + lalt - tab :   yabai -m query      --windows   --space \
+#                      | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, ."stack-index", .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $has_index > 0 then nth($has_index - 1).id else nth($array_length - 1).id end' \
+#                      | xargs -I{} yabai -m window --focus {}
+
+#shift + cmd - n : yabai -m window --stack next
+#shift + cmd - p : yabai -m window --stack prev
+
+# -- Starting/Stopping/Restarting Yabai --
+# Does not work (brew services depricated)
+#ctrl + alt - q : brew services stop yabai
+#ctrl + alt - s : brew services start yabai
+#ctrl + alt - r : brew services restart yabai
