@@ -1,0 +1,16 @@
+// KEY BINDINGS FOR ZED
+//
+[
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k cmd-f": "editor::Format"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !menu",
+    "bindings": {
+      "space": ["workspace::SendKeystrokes", ":"]
+    }
+  }
+]
