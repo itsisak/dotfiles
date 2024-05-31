@@ -14,4 +14,9 @@ alias zshrc="vim ~/.zshrc"
 alias vimrc="vim ~/.vimrc"
 alias yabairc="vim ~/.config/yabai/yabairc"
 alias skhdrc="vim ~/.config/skhd/skhdrc"
+alias config="cd ~/.config"
 alias ds='docker ps --format '\''table {{.ID}}\t{{.Names}}\t{{.Status}}'\'
+alias gdt="git difftool"
+alias wkpass="PASSWORD_STORE_DIR='$HOME/code/webkom/password-store' pass"
+alias itpass="PASSWORD_STORE_DIR='$HOME/code/itdagene/password-store' pass"
+

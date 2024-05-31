@@ -11,6 +11,7 @@
 
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 export ZSH="$HOME/.oh-my-zsh"
+local BREW_DIR=$(brew --prefix)
 
 zstyle ':omz:update' mode auto
 zstyle ':omz:update' frequency 14
@@ -21,19 +22,35 @@ HYPHEN_INSENSITIVE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-local BREW_DIR=$(brew --prefix)
+bindkey "^@" autosuggest-accept
+bindkey "^N" forward-word # partially accept autosuggestion
+bindkey "^H" backward-char
+bindkey "^J" down-line-or-beginning-search
+bindkey "^K" up-line-or-beginning-search
+bindkey "^L" forward-char
+bindkey "^[i" beginning-of-line
+bindkey "^[a" end-of-line
+bindkey "^D" kill-line
+bindkey "^Xd" kill-whole-line
+bindkey "^U" undo
 
-# PLUGINS
-# https://github.com/zsh-users
-# https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+function _sudo {
+    [[ ! $BUFFER =~ '^sudo.*' ]] && BUFFER="sudo $BUFFER" && zle end-of-line
+}
 
-plugins=(git brew zsh-syntax-highlighting z)
+zle -N _sudo
+bindkey '^Xv' _sudo
+
+plugins=(
+    z 
+    git 
+    brew 
+    zsh-autosuggestions
+    zsh-syntax-highlighting 
+)
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
-source "$BREW_DIR/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "$ZSH/oh-my-zsh.sh"
-
-
 source "$HOME/.config/zsh/aliases.zsh"
 source "$HOME/.config/zsh/functions.zsh"
 
@@ -48,8 +65,15 @@ eval "$(pyenv init -)"
 export TEXCELLENT_DIR="$HOME/.texcellent"
 [ -s "$TEXCELLENT_DIR/texcellent" ] && \. "$TEXCELLENT_DIR/texcellent"
 
+export FZF_DEFAULT_OPTS="\
+    --layout=reverse \
+    --inline-info \
+    --height 60% \
+    --pointer='→'"
 [ -s "$HOME/.fzf.zsh" ] && \. "$HOME/.fzf.zsh"
+
+#export PASSWORD_STORE_DIR="$HOME/code/webkom/password-store" 
+export PATH="$PATH:$HOME/bin"
+
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-export PASSWORD_STORE_DIR="$HOME/code/webkom/password-store" 
-export PATH="$PATH:$HOME/bin"
