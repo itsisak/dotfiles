@@ -62,6 +62,8 @@ with_loading() {
     rm -f "$temp_file"
 } 
 
+# TODO: Handle error from brew
+# Currently buggy behaviour if no matches for a search
 function brew_search_and_install() {
     if [[ "$1" == -* ]]; then
         local flag="$1"
@@ -93,10 +95,10 @@ function brew_search_and_install() {
     if [[ $package == $cask_prefix* ]]; then 
         local cask=${package//$cask_prefix/}
         cask=${cask// /}
-        brew_install=("brew" "install" "--cask" "$cask" "-n")
+        brew_install=("brew" "install" "--cask" "$cask")
     else 
         local formula=${package// /}
-        brew_install=("brew" "install" "--formula" "$formula" "-n")
+        brew_install=("brew" "install" "--formula" "$formula")
     fi
     [[ $flag == "-v" ]] && _exec "${brew_install[@]}" || with_loading --done "${brew_install[@]}"
     printf "Installation was successfull! ✅\n"
