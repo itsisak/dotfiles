@@ -52,7 +52,7 @@ fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 source "$ZSH/oh-my-zsh.sh"
 source "$HOME/dotfiles/zsh/aliases.zsh"
-source "$HOME/.config/zsh/functions.zsh"
+source "$HOME/dotfiles/zsh/functions.zsh"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$BREW_DIR/opt/nvm/nvm.sh" ] && \. "$BREW_DIR/opt/nvm/nvm.sh"
