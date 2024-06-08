@@ -80,5 +80,5 @@ let g:vimtex_compiler_latexmk               = { 'out_dir' : 'build' }
 " colorscheme sonokai
 colorscheme night-owl
 
-source $HOME/.vim/keymap.vim                " Load custom keybindings
-source $HOME/.vim/statusline.vim            " Load custom statusline
+source $HOME/dotfiles/vim/keymap.vim                " Load custom keybindings
+source $HOME/dotfiles/vim/statusline.vim            " Load custom statusline
