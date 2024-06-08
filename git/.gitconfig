@@ -1,0 +1,24 @@
+# This is Git's per-user configuration file.
+[user]
+	email = isakbendresen@gmail.com
+	name = Isak Berg Endresen
+	signingkey = /Users/isakbergendresen/.ssh/id_ed25519.pub
+[core]
+	editor = vim
+	pager = delta --line-numbers --dark
+[merge]
+	ff = false
+[pull]
+	rebase = true
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[diff "ansible-vault"]
+	textconv = ansible-vault view
+[rerere]
+	enabled = true
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true

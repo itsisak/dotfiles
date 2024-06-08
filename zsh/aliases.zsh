@@ -1,13 +1,9 @@
-# dotfiles
-alias dotfiles="/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME"
-alias dss="dotfiles status --short"
-
 # Navigating
 alias ..="cd .."
 alias z-="cd - &>/dev/null"
 alias l="eza -a --icons=always --group-directories-first --sort=extension"
 alias ll="l -l --no-time --no-user --git-repos --git -h"
-alias t="eza -T --level=2"
+alias t="eza -a -T --level=2 --ignore-glob='.git'"
 alias c="clear"
 
 alias wk="~/code/webkom"
