@@ -52,7 +52,7 @@ with_loading() {
     printf "\n"
     while kill -0 $pid 2>/dev/null; do
         i=$(( (i+1) % $spin_str_length ))
-        printf "\r\033[A${cmd:-""} %s \033[s\r\033[B" "${spin_str:$i:1}"
+        printf "\r\033[A\033[30;1m\$ ${cmd:-""} %s \033[0m\033[s\r\033[B" "${spin_str:$i:1}"
         sleep $speed
     done
     
