@@ -15,36 +15,44 @@
 "   - any nerd-font                         (font with icons)
 "
 
-let s:sonokai_configuration                 = sonokai#get_configuration()
-let s:palette                               = sonokai#get_palette(
-                                                \ s:sonokai_configuration.style, 
-                                                \ s:sonokai_configuration.colors_override
-                                                \ )
-let s:bg_primary                            = s:palette.bg1[0]
-let s:bg_secondary                          = s:palette.green[0]
-let s:bg_tertiary                           = s:palette.bg3[0]
-let s:fg_primary                            = s:palette.fg[0]
-let s:fg_secondary                          = s:palette.black[0]
-let s:shadow                                = s:palette.grey_dim[0]
-let s:flag_modified                         = s:palette.blue[0]
-let s:flag_ro                               = s:palette.red[0]
+" let s:sonokai_configuration                 = sonokai#get_configuration()
+" let s:palette                               = sonokai#get_palette(
+                                                " \ s:sonokai_configuration.style, 
+                                                " \ s:sonokai_configuration.colors_override
+                                                " \ )
+let s:bg_primary                            = '#333648' " s:palette.bg1[0]
+let s:bg_secondary                          = '#9ED06C' " s:palette.green[0]
+let s:bg_tertiary                           = '#393E53' " s:palette.bg3[0]
+let s:fg_primary                            = '#E1E3E4' " s:palette.fg[0]
+let s:fg_secondary                          = '#181A1C' " s:palette.black[0]
+let s:shadow                                = '#5A5E7A' " s:palette.grey_dim[0]
+let s:flag_modified                         = '#6DCAE8' " s:palette.blue[0]
+let s:flag_ro                               = '#FB617E' " s:palette.red[0]
 
-exe 'highlight Primary'                     . ' guibg=' . s:bg_primary      . ' guifg=' . s:fg_primary
-exe 'highlight TertiaryToPrimary'           . ' guibg=' . s:shadow          . ' guifg=' . s:bg_tertiary
+" exe 'highlight Primary'                     . ' guibg=' . s:bg_primary      . ' guifg=' . s:fg_primary
+exe 'highlight Primary'                     . ' guifg=' . s:fg_primary
+" exe 'highlight TertiaryToPrimary'           . ' guibg=' . s:shadow          . ' guifg=' . s:bg_tertiary
+exe 'highlight TertiaryToPrimary'           . ' guifg=' . s:bg_tertiary
 exe 'highlight Inactive'                    . ' guibg=' . s:bg_tertiary     . ' guifg=' . s:flag_ro
-exe 'highlight Shadow'                      . ' guibg=' . s:bg_primary      . ' guifg=' . s:shadow 
-exe 'highlight ReadOnly'                    . ' guibg=' . s:bg_primary      . ' guifg=' . s:flag_ro
+" exe 'highlight Shadow'                      . ' guibg=' . s:bg_primary      . ' guifg=' . s:shadow 
+exe 'highlight Shadow'                      . ' guifg=' . s:shadow 
+
+" exe 'highlight ReadOnly'                    . ' guibg=' . s:bg_primary      . ' guifg=' . s:flag_ro
+exe 'highlight ReadOnly'                    . ' guifg=' . s:flag_ro
+
 exe 'highlight Tab'                         . ' guibg=' . s:bg_tertiary     . ' guifg=' . s:fg_primary
 exe 'highlight TabActive'                   . ' guibg=' . s:flag_modified   . ' guifg=' . s:bg_tertiary
 
 function! UpdateSecondaryColor()
     exe 'highlight Secondary'               . ' guibg=' . s:bg_secondary    . ' guifg=' . s:bg_tertiary
     exe 'highlight SecondaryToTertiary'     . ' guibg=' . s:bg_tertiary     . ' guifg=' . s:bg_secondary
-    exe 'highlight SecondaryToPrimary'      . ' guibg=' . s:shadow          . ' guifg=' . s:bg_secondary
+    " exe 'highlight SecondaryToPrimary'      . ' guibg=' . s:shadow          . ' guifg=' . s:bg_secondary
+    exe 'highlight SecondaryToPrimary'      . ' guifg=' . s:bg_secondary
 endfunction
 
 function! UpdateModifiedColor()
-    exe 'highlight Modified'                . ' guibg=' . s:bg_primary      . ' guifg=' . s:flag_modified
+    " exe 'highlight Modified'                . ' guibg=' . s:bg_primary      . ' guifg=' . s:flag_modified
+    exe 'highlight Modified'                . ' guifg=' . s:flag_modified
 endfunction
 
 let g:right_triangle                        = ""
@@ -62,6 +70,7 @@ let g:pencil                                = "󰙏"
 let g:term                                  = ""
 let g:eye                                   = "󰈈"
 let g:vim                                   = ""
+let g:left_circle                           = "◖"
 
 set laststatus=2
 
@@ -69,7 +78,8 @@ function! Statusline#active()
     let b:branch    = gitbranch#name()
     let b:islarge   = winwidth(0) > 80
 
-    setlocal statusline=%#Secondary#\ %{StatuslineMode()}\ 
+    setlocal statusline=%#SecondaryToPrimary#%{g:left_triangle}
+    setlocal statusline+=%#Secondary#\ %{StatuslineMode()}\ 
 
     if b:islarge && b:branch != ""
         setlocal statusline+=%#SecondaryToTertiary#%{g:right_triangle}
@@ -84,7 +94,7 @@ function! Statusline#active()
         setlocal statusline+=%#SecondaryToPrimary#%{g:right_triangle}
     endif
 
-    setlocal statusline+=%#Shadow#%{g:right_triangle}
+    " setlocal statusline+=%#Shadow#%{g:right_triangle}
     setlocal statusline+=%#Primary#
 
     if b:islarge
@@ -102,8 +112,9 @@ function! Statusline#active()
         setlocal statusline+=%=
 
         setlocal statusline+=%#Primary#\ %{g:file}\ %{&ft}\ 
-        setlocal statusline+=%#Shadow#%{g:left_triangle}%#SecondaryToPrimary#%{g:left_triangle}
+        setlocal statusline+=%#SecondaryToPrimary#%{g:left_triangle}
         setlocal statusline+=%#Secondary#\ %P\ ~\ %l/%L\ %{g:clock}\ %{strftime(\"%H:%M\")}\ 
+        setlocal statusline+=%#SecondaryToPrimary#%{g:right_triangle}
     endif
 endfunction
 
@@ -116,10 +127,10 @@ endfunction
 
 function! ModifiedFlag()
     if &modified
-        let s:flag_modified                 = s:palette.yellow[0]
+        let s:flag_modified                 = '#EDC763' " s:palette.yellow[0]
         let b:modified_icon                 = g:lightning
     else
-        let s:flag_modified                 = s:palette.blue[0]
+        let s:flag_modified                 = '#6DCAE8' " s:palette.blue[0]
         let b:modified_icon                 = g:snow
     endif  
     call UpdateModifiedColor()
@@ -129,38 +140,38 @@ endfunction
 function! StatuslineMode()
     let l:mode=mode()
     if l:mode==#"n"
-        let s:bg_secondary                  = s:palette.green[0]
+        let s:bg_secondary                  = '#9ED06C' " s:palette.green[0]
         let b:mode                          = g:vim     . " NORMAL"
     elseif l:mode==#"i"
-        let s:bg_secondary                  = s:palette.purple[0]
+        let s:bg_secondary                  = '#BB97EE' " s:palette.purple[0]
         let b:mode                          = g:pencil  . " INSERT"
     elseif l:mode==#"R"
-        let s:bg_secondary                  = s:palette.purple[0]
+        let s:bg_secondary                  = '#BB97EE' " s:palette.purple[0]
         let b:mode                          = g:pencil  . " REPLACE"
     elseif l:mode==#"c"
-        let s:bg_secondary                  = s:palette.orange[0]
+        let s:bg_secondary                  = '#F89860' " s:palette.orange[0]
         let b:mode                          = g:command . " COMMAND"
     elseif l:mode==#"v"
-        let s:bg_secondary                  = s:palette.blue[0]
+        let s:bg_secondary                  = '#6DCAE8' " s:palette.blue[0]
         let b:mode                          = g:eye     . " VISUAL"
     elseif l:mode==#"V"
-        let s:bg_secondary                  = s:palette.blue[0]
+        let s:bg_secondary                  = '#6DCAE8' " s:palette.blue[0]
         let b:mode                          = g:eye     . " V-LINE"
     elseif l:mode==#"\<C-v>"
-        let s:bg_secondary                  = s:palette.blue[0]
+        let s:bg_secondary                  = '#6DCAE8' " s:palette.blue[0]
         let b:mode                          = g:eye     . " V-BLOCK"
     elseif l:mode==#"s"
-        let s:bg_secondary                  = s:palette.blue[0]
+        let s:bg_secondary                  = '#6DCAE8' " s:palette.blue[0]
         let b:mode                          = g:eye     . " SELECT"
     elseif l:mode==#"t"
-        let s:bg_secondary                  = s:palette.orange[0]
+        let s:bg_secondary                  = '#F89860' " s:palette.orange[0]
         let b:mode                          = g:term    . " TERMINAL"
     elseif l:mode==#"!"
-        let s:bg_secondary                  = s:palette.orange[0]
+        let s:bg_secondary                  = '#F89860' " s:palette.orange[0]
         let b:mode                          = g:term    . " SHELL"
     endif
     if &readonly
-        let s:bg_secondary                  = s:palette.red[0]
+        let s:bg_secondary                  = '#FB617E' " s:palette.red[0]
         let b:mode                          = g:lock    . " READ ONLY"
     endif
     call UpdateSecondaryColor()

@@ -57,7 +57,8 @@ endif
 " Plugins
 
 call plug#begin('~/.vim/plugged')           " Plugin manager
-    Plug 'sainnhe/sonokai'                  " Colorscheme
+    " Plug 'sainnhe/sonokai'                  " Colorscheme
+    Plug 'haishanh/night-owl.vim'           " Colorscheme
     Plug 'preservim/nerdtree'               " File manager
     Plug 'itchyny/vim-gitbranch'            " Get current git branch in vim
     Plug 'pangloss/vim-javascript'          " JavaScript support
@@ -72,11 +73,12 @@ let NERDTreeShowHidden                      = 1
 let g:coc_global_extensions                 = ['coc-tsserver']
 let g:vimtex_view_method                    = "skim"
 let g:vimtex_compiler_latexmk               = { 'out_dir' : 'build' }
-let g:sonokai_style                         = 'andromeda'
-let g:sonokai_better_performance            = 1
-let g:sonokai_disable_italic_comment        = 1
+" let g:sonokai_style                         = 'andromeda'
+" let g:sonokai_better_performance            = 1
+" let g:sonokai_disable_italic_comment        = 1
 
-colorscheme sonokai
+" colorscheme sonokai
+colorscheme night-owl
 
 source $HOME/.vim/keymap.vim                " Load custom keybindings
 source $HOME/.vim/statusline.vim            " Load custom statusline
