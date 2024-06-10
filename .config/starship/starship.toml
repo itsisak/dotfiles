@@ -5,4 +5,5 @@ command_timeout = 2000
 add_newline = true
 
 [line_break]
-disabled = true
+disabled = false
+
