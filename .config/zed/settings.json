@@ -13,5 +13,6 @@
   },
   "format_on_save": "off",
   "vim_mode": true,
-  "cursor_blink": false
+  "cursor_blink": false,
+  "formatter": "prettier"
 }
