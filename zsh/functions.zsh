@@ -130,3 +130,20 @@ function brew_search_and_uninstall() {
         echo "Deleting $pkg"
     done
 }
+
+function brew_list() {
+
+    with_loading --done brew list -1 --formulae
+    local formulae="$WITH_LOADING_RESULT"
+
+    with_loading --done brew list -1 --casks
+    local casks="$WITH_LOADING_RESULT"
+
+    #echo "Formulae:"
+    #echo $formulae
+    #echo "Casks: "
+    #echo $casks
+
+    preview_command="brew info --json=v1 {1} | jq -r '.[0].desc'"
+    local package=$(echo "$formulae\n$casks" | fzf --preview="echo '{1}\n' && $preview_command" --preview-window="40%" --padding="0")
+}
