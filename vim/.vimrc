@@ -10,9 +10,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 call plug#begin('~/.vim/plugged')
+    Plug 'preservim/nerdtree'               " File manager
     Plug 'catppuccin/vim', 
         \ { 'as': 'catppuccin' }            " Colorscheme
-    Plug 'preservim/nerdtree'               " File manager
     Plug 'itchyny/vim-gitbranch'            " Get current git branch in vim
     Plug 'lervag/vimtex'                    " LaTeX compilation
     Plug '/opt/homebrew/opt/fzf'            " Fuzzyfinder in vim
@@ -30,6 +30,12 @@ let NERDTreeShowHidden                      = 1
 let g:coc_global_extensions                 = ['coc-tsserver']
 let g:vimtex_view_method                    = "skim"
 let g:vimtex_compiler_latexmk               = { 'out_dir' : 'build' }
+
+if has('termguicolors')
+ set termguicolors                          " Better colors (required for current colorscheme)
+endif
+
+colorscheme catppuccin_macchiato
 
 filetype on                                 " Enable type file detection. Vim will be able to try to detect the type of file is use.
 filetype plugin on                          " Enable plugins and load plugin for the detected file type.
@@ -75,13 +81,9 @@ set secure                                  " Prevent 'autocmd', shell and write
 autocmd BufNewFile,BufRead *
     \ setlocal formatoptions-=ro            " Do not insert comment on newline
 
-if has('termguicolors')
- set termguicolors                          " Better colors (required for current colorscheme)
-endif
+autocmd FileType nerdtree 
+    \ setlocal fillchars=eob:\              " Hide ~ from NERDTree
 
-colorscheme catppuccin_macchiato
-
-
-source $HOME/dotfiles/vim/keymap.vim                " Load custom keybindings
-source $HOME/dotfiles/vim/statusline.vim            " Load custom statusline
+source $HOME/dotfiles/vim/keymap.vim        " Load custom keybindings
+source $HOME/dotfiles/vim/statusline.vim    " Load custom statusline
 
