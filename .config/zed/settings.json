@@ -1,8 +1,3 @@
-// Zed settings
-//
-// docs: https://zed.dev/docs/configuring-zed
-// default settings: run `open default settings` command
-//
 {
   "auto_install_extensions": {
     "catppuccin": true,
