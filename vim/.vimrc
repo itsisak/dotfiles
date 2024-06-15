@@ -9,6 +9,28 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+call plug#begin('~/.vim/plugged')
+    Plug 'catppuccin/vim', 
+        \ { 'as': 'catppuccin' }            " Colorscheme
+    Plug 'preservim/nerdtree'               " File manager
+    Plug 'itchyny/vim-gitbranch'            " Get current git branch in vim
+    Plug 'lervag/vimtex'                    " LaTeX compilation
+    Plug '/opt/homebrew/opt/fzf'            " Fuzzyfinder in vim
+    Plug 'neoclide/coc.nvim', 
+        \ { 
+            \ 'branch': 'master', 
+            \ 'do': 'npm ci' 
+        \ }                                 " Code suggestions
+    Plug 'pangloss/vim-javascript'          " JavaScript support
+    Plug 'leafgarland/typescript-vim'       " TypeScript syntax
+    Plug 'maxmellon/vim-jsx-pretty'         " JS and JSX syntax
+call plug#end()
+
+let NERDTreeShowHidden                      = 1
+let g:coc_global_extensions                 = ['coc-tsserver']
+let g:vimtex_view_method                    = "skim"
+let g:vimtex_compiler_latexmk               = { 'out_dir' : 'build' }
+
 filetype on                                 " Enable type file detection. Vim will be able to try to detect the type of file is use.
 filetype plugin on                          " Enable plugins and load plugin for the detected file type.
 filetype indent on                          " Load an indent file for the detected file type.
@@ -50,35 +72,16 @@ set wildignore=                             " Ignore files, do not open in vim.
 set exrc                                    " Search projects for local .vimrc files.
 set secure                                  " Prevent 'autocmd', shell and write commands in local .vimrc files.
 
+autocmd BufNewFile,BufRead *
+    \ setlocal formatoptions-=ro            " Do not insert comment on newline
+
 if has('termguicolors')
  set termguicolors                          " Better colors (required for current colorscheme)
 endif
 
-" Plugins
+colorscheme catppuccin_macchiato
 
-call plug#begin('~/.vim/plugged')           " Plugin manager
-    " Plug 'sainnhe/sonokai'                  " Colorscheme
-    Plug 'haishanh/night-owl.vim'           " Colorscheme
-    Plug 'preservim/nerdtree'               " File manager
-    Plug 'itchyny/vim-gitbranch'            " Get current git branch in vim
-    Plug 'pangloss/vim-javascript'          " JavaScript support
-    Plug 'leafgarland/typescript-vim'       " TypeScript syntax
-    Plug 'maxmellon/vim-jsx-pretty'         " JS and JSX syntax
-    Plug 'neoclide/coc.nvim', { 'branch': 'master', 'do': 'npm ci' }
-    Plug 'lervag/vimtex'                    " LaTeX compilation
-    Plug '/opt/homebrew/opt/fzf'            " Fuzzyfinder in vim
-call plug#end()
-
-let NERDTreeShowHidden                      = 1
-let g:coc_global_extensions                 = ['coc-tsserver']
-let g:vimtex_view_method                    = "skim"
-let g:vimtex_compiler_latexmk               = { 'out_dir' : 'build' }
-" let g:sonokai_style                         = 'andromeda'
-" let g:sonokai_better_performance            = 1
-" let g:sonokai_disable_italic_comment        = 1
-
-" colorscheme sonokai
-colorscheme night-owl
 
 source $HOME/dotfiles/vim/keymap.vim                " Load custom keybindings
 source $HOME/dotfiles/vim/statusline.vim            " Load custom statusline
+
