@@ -4,6 +4,13 @@
 // default settings: run `open default settings` command
 //
 {
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "git-firefly": true,
+    "dockerfile": true,
+    "html": true,
+    "toml": true
+  },
   "theme": "Catppuccin Macchiato",
   "buffer_font_size": 15,
   "autosave": {
