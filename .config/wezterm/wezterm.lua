@@ -2,17 +2,14 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 -- local config = {}
 
-config.color_scheme = "Night Owl (Gogh)"
+config.color_scheme = "Catppuccin Macchiato" -- "Night Owl (Gogh)"
 config.line_height = 1.20
 
 config.font_size = 20
 config.font = wezterm.font {
-    family = 'JetBrains Mono',
-    harfbuzz_features = { 
-        'calt=0', 
-        'clig=0', 
-        'liga=0' 
-    },
+    family = 'JetBrainsMono Nerd Font Propo',
+    weight = 600,
+    harfbuzz_features = { 'zero' }
 }
 
 config.scrollback_lines = 10000

@@ -1,18 +1,34 @@
-// Zed settings
-//
-// docs: https://zed.dev/docs/configuring-zed
-// default settings: run `open default settings` command
-//
 {
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "git-firefly": true,
+    "dockerfile": true,
+    "html": true,
+    "toml": true
+  },
   "theme": "Catppuccin Macchiato",
+  "ui_font_family": "JetBrainsMono Nerd Font Propo",
+  "ui_font_size": 14,
+  "ui_font_weight": 400,
+  "ui_font_features": {
+    "zero": true
+  },
+  "buffer_font_family": "JetBrainsMono Nerd Font Propo",
   "buffer_font_size": 15,
+  "buffer_font_weight": 600,
+  "buffer_font_features": {
+    "zero": true
+  },
   "autosave": {
     "after_delay": {
       "milliseconds": 1000
     }
   },
   "format_on_save": "off",
+  "formatter": "prettier",
   "vim_mode": true,
   "cursor_blink": false,
-  "formatter": "prettier"
+  "relative_line_numbers": true,
+  "active_pane_magnification": 1.5,
+  "extend_comment_on_newline": false
 }
