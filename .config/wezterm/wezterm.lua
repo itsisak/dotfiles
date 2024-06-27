@@ -1,6 +1,7 @@
-local wezterm = require("wezterm")
-local config = wezterm.config_builder()
--- local config = {}
+local wezterm = require 'wezterm'
+-- local act = require 'wezterm.action'
+local utils = require 'utils'
+local config = {}
 
 config.color_scheme = "Catppuccin Macchiato" -- "Night Owl (Gogh)"
 config.line_height = 1.20
@@ -28,5 +29,21 @@ config.enable_tab_bar = false
 
 config.send_composed_key_when_left_alt_is_pressed = true
 config.send_composed_key_when_right_alt_is_pressed = true
+
+local keysToDisable = {
+    { key = '_', mods = 'CTRL' },
+    { key = '_', mods = 'SHIFT|CTRL' },
+    { key = '-', mods = 'SHIFT|CTRL' }
+}
+
+local customKeyBindings = {
+    -- {
+        -- key = '.',
+        -- mods = 'CTRL',
+        -- action = act.DecreaseFontSize
+    -- },
+}
+
+config.keys = utils.disableKeys(keysToDisable)
 
 return config
