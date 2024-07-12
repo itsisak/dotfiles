@@ -147,3 +147,10 @@ function brew_list() {
     preview_command="brew info --json=v1 {1} | jq -r '.[0].desc'"
     local package=$(echo "$formulae\n$casks" | fzf --preview="echo '{1}\n' && $preview_command" --preview-window="40%" --padding="0")
 }
+
+docker_exec_with_bash() {
+    local id=$(docker ps --format '{{.ID}} {{.Names}}' | grep $1 | cut -d ' ' -f 1)  
+    echo "Entering $1 ($id)"
+    docker exec -it $id bash
+}
+
