@@ -29,6 +29,52 @@ function find_all() {
     fzf_with_preview
 }
 
+function docker_stop_all() {
+    printf "%-30s %-15s STATUS\n" "NAME" "ID"
+    while IFS=':' read -r id name; do
+        local out_str=$(printf "%-30s %-15s" $name $id)
+        # with_loading -m="$out_str    " -d="\b\b\bSTOPPED" -- docker stop $id
+        docker stop $id &
+    done <<< $(docker ps -a --format "{{.ID}}:{{.Names}}")
+    wait
+}
+
+test_parallell() {
+    set +m
+    # Function to simulate a job (can replace with actual job)
+    job() {
+        sleep $1  # Simulate the job taking $1 seconds
+    }
+
+    # Array to store PIDs
+    pids=()
+
+    # Start background jobs
+    for i in {1..3}; do
+        job $((i + 2)) &  # Run job in background with different durations
+        pids+=($!)        # Store the background job PID
+    done
+
+    # Display loading indicator for each job
+    for pid in "${pids[@]}"; do
+        (
+            # Spinner animation
+            spinner="/|\\-/|\\-"
+            i=0
+            while kill -0 "$pid" 2>/dev/null; do
+                i=$(( (i+1) % 8 ))
+                printf "\r[Job $pid] ${spinner:$i:1}"
+                sleep 0.1
+            done
+            printf "\r[Job $pid] Done!\n"
+        ) &
+    done
+
+    wait  # Wait for all jobs to finish
+    echo "All jobs completed!"
+    set -m
+}
+
 # Run a command with a loading animation
 # Get result from $WITH_LOADING_RESULT
 with_loading() {
@@ -37,26 +83,55 @@ with_loading() {
     local spin_str_length=2
     local speed=0.2
     local done_str="🎉"
+   
+    # Parse flags 
+    for i in "$@"; do
+        case $i in
+            -d=*|--done=*)
+                local done_str="${i#*=}"
+                shift
+                ;;
+            -m=*|--message=*)
+                local msg="${i#*=}"
+                shift
+                ;;
+            --)
+                shift
+                break
+                ;;
+            -*|--*)
+                echo "Unknown option $i"
+                exit 1
+                ;;
+            *)
+                ;;
+        esac
+    done
 
-    if [[ $1 == -* ]]; then 
-        local flag=$1 
-        shift
-    fi
     local i=0
     local cmd="$@"
     local temp_file="/tmp/${cmd// /_}.$$"
-    local first_run=true
+   
+    # Hide cursor during loading 
+    trap 'tput cnorm' EXIT
+    tput civis
 
     pid=$( ("$@") > "$temp_file" & echo $! )
 
-    printf "\n"
+    #printf "\n"
     while kill -0 $pid 2>/dev/null; do
         i=$(( (i+1) % $spin_str_length ))
-        printf "\r\033[A\033[30;1m\$ ${cmd:-""} %s \033[0m\033[s\r\033[B" "${spin_str:$i:1}"
+        #printf "\r\033[A"
+        if [ -n "${msg+x}" ]; then
+            printf "$msg"
+        else
+            printf "\033[30;1m\$${cmd:-""}" 
+        fi
+        printf "${spin_str:$i:1} \033[0m\033[s\r\033[B"
         sleep $speed
     done
     
-    [[ $flag != "--done" ]] && printf "\033[u\033[K" || printf "\033[u\b\b\b$done_str\n"
+    [[ -n $done_str ]] && printf "\033[u\b\b\b$done_str\n" || printf "%-30s %-15s" $name $id
     
     WITH_LOADING_RESULT=$(< "$temp_file")
     rm -f "$temp_file"
@@ -72,10 +147,10 @@ function brew_search_and_install() {
     local query="$1"
     local cask_prefix="<CASK> "
     
-    with_loading --done brew search --formulae "$query"
+    with_loading -- brew search --formulae "$query"
     local formulae="$WITH_LOADING_RESULT"
     
-    with_loading --done brew search --casks "$query"
+    with_loading -- brew search --casks "$query"
     local casks="$WITH_LOADING_RESULT"
 
     # Buggy behaviour here
@@ -109,11 +184,11 @@ function brew_search_and_install() {
 
 function brew_search_and_uninstall() {
 
-    with_loading -n brew list --formulae
+    with_loading -n -- brew list --formulae
     local formulae="$WITH_LOADING_RESULT"
     printf "\n"
     
-    with_loading -n brew list --casks
+    with_loading -n -- brew list --casks
     local casks="$WITH_LOADING_RESULT"
 
     local packages=$(echo "$formulae\n$casks" | fzf -m --padding="0")
@@ -133,10 +208,10 @@ function brew_search_and_uninstall() {
 
 function brew_list() {
 
-    with_loading --done brew list -1 --formulae
+    with_loading -- brew list -1 --formulae
     local formulae="$WITH_LOADING_RESULT"
 
-    with_loading --done brew list -1 --casks
+    with_loading -- brew list -1 --casks
     local casks="$WITH_LOADING_RESULT"
 
     #echo "Formulae:"
