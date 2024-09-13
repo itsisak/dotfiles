@@ -1,3 +1,5 @@
+source ./with_loading.zsh
+
 function _exec() {
     echo "$@"
     ("$@")
@@ -33,109 +35,39 @@ function docker_stop_all() {
     printf "%-30s %-15s STATUS\n" "NAME" "ID"
     while IFS=':' read -r id name; do
         local out_str=$(printf "%-30s %-15s" $name $id)
-        # with_loading -m="$out_str    " -d="\b\b\bSTOPPED" -- docker stop $id
-        docker stop $id &
+        with_loading                    \
+            --message="$out_str    "    \
+            --done="\b\b\bSTOPPED"      \
+            --                          \
+            docker stop $id
     done <<< $(docker ps -a --format "{{.ID}}:{{.Names}}")
     wait
 }
 
-test_parallell() {
-    set +m
-    # Function to simulate a job (can replace with actual job)
-    job() {
-        sleep $1  # Simulate the job taking $1 seconds
-    }
-
-    # Array to store PIDs
-    pids=()
-
-    # Start background jobs
-    for i in {1..3}; do
-        job $((i + 2)) &  # Run job in background with different durations
-        pids+=($!)        # Store the background job PID
+function docker_stop_all_parallel() {
+    printf "%-30s %-15s %-6s\n" "NAME" "ID" "STATUS"
+    local cmds=()
+    local msgs=""
+    for container in $(docker ps -a --format "{{.ID}}:{{.Names}}"); do
+        local id="${container%%:*}"
+        local name="${container#*:}"
+        cmds+=("docker stop $id")
+        msgs+=$(printf "%-30s %-15s:" $name $id)
     done
-
-    # Display loading indicator for each job
-    for pid in "${pids[@]}"; do
-        (
-            # Spinner animation
-            spinner="/|\\-/|\\-"
-            i=0
-            while kill -0 "$pid" 2>/dev/null; do
-                i=$(( (i+1) % 8 ))
-                printf "\r[Job $pid] ${spinner:$i:1}"
-                sleep 0.1
-            done
-            printf "\r[Job $pid] Done!\n"
-        ) &
-    done
-
-    wait  # Wait for all jobs to finish
-    echo "All jobs completed!"
-    set -m
+    with_loading_parallel       \
+        --done="DONE"           \
+        --messages="$msgs"      \
+        --format="%-45s %-6s"   \
+        --                      \
+        $cmds
 }
 
-# Run a command with a loading animation
-# Get result from $WITH_LOADING_RESULT
-with_loading() {
-    # Customizable options
-    local spin_str="⏳⌛️" # Other options: '🤔🙂🤔🙂' '-\|/'
-    local spin_str_length=2
-    local speed=0.2
-    local done_str="🎉"
-   
-    # Parse flags 
-    for i in "$@"; do
-        case $i in
-            -d=*|--done=*)
-                local done_str="${i#*=}"
-                shift
-                ;;
-            -m=*|--message=*)
-                local msg="${i#*=}"
-                shift
-                ;;
-            --)
-                shift
-                break
-                ;;
-            -*|--*)
-                echo "Unknown option $i"
-                exit 1
-                ;;
-            *)
-                ;;
-        esac
-    done
+docker_exec_with_bash() {
+    local id=$(docker ps --format '{{.ID}} {{.Names}}' | grep $1 | cut -d ' ' -f 1)  
+    echo "Entering $1 ($id)"
+    docker exec -it $id bash
+}
 
-    local i=0
-    local cmd="$@"
-    local temp_file="/tmp/${cmd// /_}.$$"
-   
-    # Hide cursor during loading 
-    trap 'tput cnorm' EXIT
-    tput civis
-
-    pid=$( ("$@") > "$temp_file" & echo $! )
-
-    #printf "\n"
-    while kill -0 $pid 2>/dev/null; do
-        i=$(( (i+1) % $spin_str_length ))
-        #printf "\r\033[A"
-        if [ -n "${msg+x}" ]; then
-            printf "$msg"
-        else
-            printf "\033[30;1m\$${cmd:-""}" 
-        fi
-        printf "${spin_str:$i:1} \033[0m\033[s\r\033[B"
-        sleep $speed
-    done
-    
-    [[ -n $done_str ]] && printf "\033[u\b\b\b$done_str\n" || printf "%-30s %-15s" $name $id
-    
-    WITH_LOADING_RESULT=$(< "$temp_file")
-    rm -f "$temp_file"
-} 
 
 # TODO: Handle error from brew
 # Currently buggy behaviour if no matches for a search
