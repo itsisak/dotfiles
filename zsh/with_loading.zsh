@@ -13,16 +13,16 @@ function with_loading_parallel() {
         echo "Run jobs in parallel with indidividual loading indicators"
         echo
         echo "Options"
-        h_print "-d=<str>," "--done=<str>" "String to be shown when job is done"
-        h_print "-m=<str>," "--message=<str>" "String to describe job"
-        h_print "-f=<str>," "--format=<str>" "Format of output"
-        h_print "" "--spin=<str>" "Loading indicator string (requires --slen aswell)"
-        h_print "" "--slen=<str>" "Length of loading indicator string"
-        h_print "" "--speed=<str>" "Speed of loading indicator"
-        h_print "-q," "--quiet" "No loading output (antipattern, do not use this function)"
-        h_print "-o," "--out" "Override loading with job output when done"
-        h_print "" "--" "End of flags"
-        h_print "-h" "--help" "Print this help and exit"
+        h_print "-d=<str>,"     "--done=<str>"      "String to be shown when job is done"
+        h_print "-m=<str>,"     "--message=<str>"   "String to describe job"
+        h_print "-f=<str>,"     "--format=<str>"    "Format of output"
+        h_print ""              "--spin=<str>"      "Loading indicator string (requires --slen aswell)"
+        h_print ""              "--slen=<str>"      "Length of loading indicator string"
+        h_print ""              "--speed=<str>"     "Speed of loading indicator"
+        h_print "-q,"           "--quiet"           "No loading output (antipattern, do not use this function)"
+        h_print "-o,"           "--out"             "Override loading with job output when done"
+        h_print "-h"            "--help"            "Print this help and exit"
+        h_print ""              "--"                "End of flags"
     }
     
     local spin_str="⏳⌛️"
@@ -31,6 +31,7 @@ function with_loading_parallel() {
     local done_str="DONE"
     local out_fmt="%-30s %-10s"
     local in_messages=
+
     # Parse options
     for i in "$@"; do
         case $i in
@@ -83,7 +84,7 @@ function with_loading_parallel() {
         esac
     done
 
-    # Exit if no commands is passed
+    # Show help and exit if no commands is passed
     if [[ $# -eq 0 ]]; then
         help
         exit 1
@@ -92,7 +93,7 @@ function with_loading_parallel() {
     # Setup 
     local cmds=($argv)
     local cmds_size=$#
-    local tmp_file="/tmp/${cmd// /_}.$$"
+    local tmp_file="/tmp/with_loading_parallel_output_$$"
     local pids=()
     set +m
     tput civis
@@ -121,7 +122,7 @@ function with_loading_parallel() {
     }
     handle_interrupt() {
         trap SIGINT
-        # Might override other outpu
+        # Might override other output
         out "\nInterrupt received. Terminated jobs: "
         for pid in "${pids[@]}"; do
             if kill -0 $pid 2>/dev/null; then
@@ -158,7 +159,7 @@ function with_loading_parallel() {
         done
         sleep $speed
     done
-    sleep 0.5 
+
     # Clean up loading output
     move cuu $cmds_size
     for j in {1..$cmds_size}; do
@@ -184,6 +185,7 @@ function with_loading_parallel() {
 
 # Run a command with a loading animation
 # Get result from $WITH_LOADING_RESULT
+# Outdated by with_loading_parallel
 with_loading() {
     # Customizable options
     local spin_str="⏳⌛️" # Other options: '🤔🙂🤔🙂' '-\|/'

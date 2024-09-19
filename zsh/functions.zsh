@@ -1,4 +1,4 @@
-source ./with_loading.zsh
+source $HOME/dotfiles/zsh/with_loading.zsh
 
 function _exec() {
     echo "$@"
@@ -31,6 +31,8 @@ function find_all() {
     fzf_with_preview
 }
 
+# Stop all docker containers
+# Cool code, but outdated by docker_stop_all_parallel
 function docker_stop_all() {
     printf "%-30s %-15s STATUS\n" "NAME" "ID"
     while IFS=':' read -r id name; do
@@ -44,6 +46,8 @@ function docker_stop_all() {
     wait
 }
 
+# Stop all docker containers in parallel with loading indicators
+# Options passed to this function is passed on to with_loading_parallel
 function docker_stop_all_parallel() {
     printf "%-30s %-15s %-6s\n" "NAME" "ID" "STATUS"
     local cmds=()
@@ -58,10 +62,12 @@ function docker_stop_all_parallel() {
         --done="DONE"           \
         --messages="$msgs"      \
         --format="%-45s %-6s"   \
+        "$@"                    \
         --                      \
         $cmds
 }
 
+# Enter a docker container by name of container
 docker_exec_with_bash() {
     local id=$(docker ps --format '{{.ID}} {{.Names}}' | grep $1 | cut -d ' ' -f 1)  
     echo "Entering $1 ($id)"
@@ -71,6 +77,7 @@ docker_exec_with_bash() {
 
 # TODO: Handle error from brew
 # Currently buggy behaviour if no matches for a search
+# Handle casks better - maybe just brew search "$query" and seperate after
 function brew_search_and_install() {
     if [[ "$1" == -* ]]; then
         local flag="$1"
