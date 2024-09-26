@@ -9,6 +9,7 @@ nnoremap <C-c>      :VimtexCompile  <CR>
 nnoremap <C-t>      :NERDTreeToggle <CR>
 nnoremap <C-f>      :NERDTreeFind   <CR>
 nnoremap <C-b>      :nohl           <CR>
+nnoremap <C-w>      :set wrap!       <CR>
 nnoremap <space>    :
 nnoremap T      :vert terminal <CR>
 " nnoremap <>      :vert terminal <CR> 

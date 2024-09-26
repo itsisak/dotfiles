@@ -113,7 +113,8 @@ function! Statusline#active()
 
         setlocal statusline+=%#Primary#\ %{g:file}\ %{&ft}\ 
         setlocal statusline+=%#SecondaryToPrimary#%{g:left_triangle}
-        setlocal statusline+=%#Secondary#\ %P\ ~\ %l/%L\ %{g:clock}\ %{strftime(\"%H:%M\")}\ 
+        " setlocal statusline+=%#Secondary#\ %P\ ~\ %l/%L\ %{g:clock}\ %{strftime(\"%H:%M\")}\ 
+        setlocal statusline+=%#Secondary#\ %P\ ~\ %{wordcount().words}\ ~\ %{g:clock}\ %{strftime(\"%H:%M\")}\ 
         setlocal statusline+=%#SecondaryToPrimary#%{g:right_triangle}
     endif
 endfunction

@@ -60,6 +60,7 @@ set showcmd                                 " Show partial command you type in t
 set showmatch                               " Show matching words during a search.
 set noshowmode                              " Do not show current mode in command line (opposite of showmode).
 set shortmess+=F                            " Do not echo file name to commandline.
+set clipboard=unnamedplus                   " Make vim always use system clipboard
 set hlsearch                                " Use highlighting when doing a search.
 set history=1000                            " Set the commands to save in history default number is 20.
 set wildmenu                                " Enable auto completion menu after pressing TAB.
