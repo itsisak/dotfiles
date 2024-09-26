@@ -21,6 +21,7 @@ function with_loading_parallel() {
         h_print ""              "--speed=<str>"     "Speed of loading indicator"
         h_print "-q,"           "--quiet"           "No loading output (antipattern, do not use this function)"
         h_print "-o,"           "--out"             "Override loading with job output when done"
+        h_print "",             "--bind=<str>"      "Run function passed as string, with result of with_loading_parallel"
         h_print "-h"            "--help"            "Print this help and exit"
         h_print ""              "--"                "End of flags"
     }
@@ -65,6 +66,10 @@ function with_loading_parallel() {
                 ;;
             -o|--out) # Override loading with job output when done
                 local out=1
+                shift
+                ;;
+            --bind=*)
+                local bind_func="${i#*=}"
                 shift
                 ;;
             -h|--help) # Prints help and exits
@@ -174,6 +179,15 @@ function with_loading_parallel() {
     if [[ -v $out ]]; then 
         move cuu $cmds_size
         cat $tmp_file
+    fi
+    
+    if [[ -n $bind_func ]]; then
+        local output=$(<$tmp_file)
+        if [[ "$bind_func" == *"{}"* ]]; then
+            bind_func="${bind_func//\{\}/\"$output\"}"
+        fi
+        # echo "$bind_func"
+        eval "$bind_func"
     fi
     
     # Cleanup

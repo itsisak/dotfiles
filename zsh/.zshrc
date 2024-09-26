@@ -74,4 +74,3 @@ export FZF_DEFAULT_OPTS='
 
 export PATH="$PATH:$HOME/bin"
 
-alias kvm="java -jar /Users/isakbergendresen/code/webkom/dotfiles/JavaClient.jar"

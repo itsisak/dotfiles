@@ -74,6 +74,29 @@ docker_exec_with_bash() {
     docker exec -it $id bash
 }
 
+function docker_enter() {
+    local containers=$(docker ps --format '{{.Names}}')
+    local container_name=
+
+    if [[ $# -eq 0 ]]; then
+        container_name=$(echo "$containers" | fzf)
+    else
+        container_name=$(echo "$containers" | grep $1)
+        local number_of_results=${$(echo "$container_name" | wc -w)//[[:space:]]/}
+        if [[ $number_of_results -gt 1 ]]; then
+            echo "Multiple matches found, please select one"
+            container_name=$(echo "$container_name" | fzf)
+        fi
+    fi
+    if [[ -z $container_name ]]; then 
+        echo "No container found"
+        return
+    fi
+    local container_id=$(docker ps -qaf "name=$container_name")
+    echo "Entering: $container_name ($container_id)"
+    docker exec -it $container_id sh
+}
+
 
 # TODO: Handle error from brew
 # Currently buggy behaviour if no matches for a search
@@ -120,6 +143,43 @@ function brew_search_and_install() {
 # Prompt before install
 # read "install?Install cask $cask? (y/n) " # clear prompt: printf "\r\033[A\033[K"
 # [[ $install =~ ^[yY]$ ]] && brew install --cask $cask -n
+
+
+function brew_search_and_install_parallel() {
+
+    bind_function() {
+        local package=$(echo {} | fzf)
+        echo "brew install $package"
+    }
+    local fun=$(typeset -f bind_function | sed '1d;$d')
+
+    local query=$1
+    local cmds=(
+        "brew search --formulae $query"
+        "brew search --casks $query"
+    )
+
+    local msgs="Fetching formulae   :Fetching casks      "
+
+    printf "%-20s %-6s\n" "TASK" "STATUS"
+    with_loading_parallel           \
+        --messages="$msgs"          \
+        --format="%-20s %-6s"       \
+        --bind="
+            local package=\$(echo {} | fzf)
+            echo Installing \$package
+            brew install \$package --quiet -n
+        "                           \
+        --                          \
+        $cmds
+}
+
+function custom_brew() {
+    local package=$1
+    local t=$2
+    echo "Installing $package"
+    brew install $package --quiet -n
+}
 
 function brew_search_and_uninstall() {
 
