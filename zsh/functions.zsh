@@ -221,3 +221,12 @@ function brew_list() {
     preview_command="brew info --json=v1 {1} | jq -r '.[0].desc'"
     local package=$(echo "$formulae\n$casks" | fzf --preview="echo '{1}\n' && $preview_command" --preview-window="40%" --padding="0")
 }
+
+
+function fuzzy_git_log() {
+    local commit=$(git log --oneline | \
+        fzf --preview 'git show --no-patch --format="%ad%n%an <%ae>" $(echo {} | awk "{print \$1}")')
+    printf "\033[0;36mCheckout\033[0m - $commit\n"
+    git checkout $(echo $commit | awk "{print \$1}")
+}
+
