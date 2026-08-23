@@ -1,6 +1,5 @@
 # Navigating
 alias ..="cd .."
-alias z-="cd - &>/dev/null"
 alias l="eza -a --icons=always --group-directories-first --sort=extension"
 alias ll="l -l --no-time --no-user --git-repos --git -h"
 alias t="tt --level=2"
