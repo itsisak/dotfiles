@@ -1,4 +1,4 @@
-source $HOME/dotfiles/zsh/with_loading.zsh
+source $HOME/.config/zsh/with_loading.zsh
 
 function _exec() {
     echo "$@"

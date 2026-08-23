@@ -99,6 +99,6 @@ autocmd BufNewFile,BufRead *
 autocmd FileType nerdtree 
     \ setlocal fillchars=eob:\              " Hide ~ from NERDTree
 
-source $HOME/dotfiles/vim/keymap.vim        " Load custom keybindings
-source $HOME/dotfiles/vim/statusline.vim    " Load custom statusline
+source $HOME/.config/vim/keymap.vim        " Load custom keybindings
+source $HOME/.config/vim/statusline.vim    " Load custom statusline
 

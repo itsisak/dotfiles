@@ -9,7 +9,7 @@
 #                                       
 ##############################################################################
 if [[ -n "$ZSH_DEBUGRC" ]]; then
-      zmodload zsh/zprof
+    zmodload zsh/zprof
 fi
 
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
@@ -31,7 +31,7 @@ plugins=(
     zsh-autosuggestions
     zsh-syntax-highlighting 
 )
- fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 # Guide
 # git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -42,9 +42,9 @@ plugins=(
 
 
 source "$ZSH/oh-my-zsh.sh"
-source "$HOME/dotfiles/zsh/aliases.zsh"
-source "$HOME/dotfiles/zsh/keymap.zsh"
-source "$HOME/dotfiles/zsh/functions.zsh"
+source "$HOME/.config/zsh/aliases.zsh"
+source "$HOME/.config/zsh/keymap.zsh"
+source "$HOME/.config/zsh/functions.zsh"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$BREW_DIR/opt/nvm/nvm.sh" ] && \. "$BREW_DIR/opt/nvm/nvm.sh"
@@ -60,6 +60,7 @@ eval "$(starship init zsh)"
 export TEXCELLENT_DIR="$HOME/.texcellent"
 [ -s "$TEXCELLENT_DIR/texcellent" ] && \. "$TEXCELLENT_DIR/texcellent"
 
+source <(fzf --zsh)
 export FZF_DEFAULT_OPTS='
     --color=fg:#dddddd,fg+:#ffffff,bg:-1,bg+:-1
     --color=hl:#5f87af,hl+:#5fd7ff,info:#5f87af,marker:#87ff00
@@ -76,15 +77,12 @@ export FZF_DEFAULT_OPTS='
     --separator="-" 
     --scrollbar="│" 
 '
-[ -s "$HOME/.fzf.zsh" ] && \. "$HOME/.fzf.zsh"
-
-#[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 export PATH="$PATH:$HOME/bin"
 export PATH="/opt/homebrew/opt/bison/bin:$PATH"
 export PATH="$HOME/.spin/bin:$PATH"
 
 if [[ -n "$ZSH_DEBUGRC" ]]; then
-      zprof
+    zprof
 fi
 
