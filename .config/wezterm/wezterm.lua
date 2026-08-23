@@ -1,12 +1,17 @@
 local wezterm = require 'wezterm'
 local utils = require 'utils'
+-- local active_workspaces = require 'active_workspaces'
 
 -- Globals
 wezterm.GLOBAL.color_scheme = "Catppuccin Mocha" -- "Night Owl (Gogh)"
 -- wezterm.GLOBAL.color_scheme = 'Night Owl (Gogh)'
 
 -- Generic config
-local config = wezterm.config_builder()
+-- local config = wezterm.config_builder()
+local config = wezterm.config_builder and wezterm.config_builder() or {}
+
+-- local bar = wezterm.plugin.require "https://github.com/adriankarlen/bar.wezterm"
+-- local bar = wezterm.plugin.require("file://" .. wezterm.home_dir .. "/.config/wezterm/plugins/myplug.wezterm")
 
 config.color_scheme = wezterm.GLOBAL.color_scheme
 config.line_height = 1.00
@@ -30,9 +35,6 @@ config.window_padding = {
 }
 config.window_decorations = "RESIZE"
 config.adjust_window_size_when_changing_font_size = false
-config.enable_tab_bar = true
-config.use_fancy_tab_bar = false
-config.hide_tab_bar_if_only_one_tab = true
 
 config.send_composed_key_when_left_alt_is_pressed = true
 config.send_composed_key_when_right_alt_is_pressed = true
@@ -59,4 +61,6 @@ return utils.merge_config {
     options = { merge = { "keys" } },
     config,
     require "sessionizer".config,
+    -- require "active_workspaces".config,
+    require "tab_bar".config,
 }
