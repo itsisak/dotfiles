@@ -12,39 +12,29 @@ if [[ -n "$ZSH_DEBUGRC" ]]; then
     zmodload zsh/zprof
 fi
 
-export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
-export ZSH="$HOME/.oh-my-zsh"
-local BREW_DIR=$(brew --prefix)
+local ZSH_CACHE_DIR="$HOME/.cache/zsh"
+mkdir -p $ZSH_CACHE_DIR
 
-zstyle ':omz:update' mode auto
-zstyle ':omz:update' frequency 14
+autoload -Uz compinit
+compinit -d ~/.cache/zsh/zcompdump-$HOST-$ZSH_VERSION
+#export ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump-$HOST"
+
+local ZSH_PLUGIN_DIR="$HOME/.zsh/plugins"
+source "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+local BREW_DIR=$(brew --prefix)
 
 HIST_STAMPS="mm/dd/yyyy"
 HYPHEN_INSENSITIVE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-plugins=(
-    z 
-    git 
-    brew 
-    zsh-autosuggestions
-    zsh-syntax-highlighting 
-)
-fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
-# Guide
-# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-
-#source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
-#antidote load
-
-
-source "$ZSH/oh-my-zsh.sh"
 source "$HOME/.config/zsh/aliases.zsh"
 source "$HOME/.config/zsh/keymap.zsh"
 source "$HOME/.config/zsh/functions.zsh"
+
+eval "$(zoxide init zsh)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$BREW_DIR/opt/nvm/nvm.sh" ] && \. "$BREW_DIR/opt/nvm/nvm.sh"
@@ -85,4 +75,3 @@ export PATH="$HOME/.spin/bin:$PATH"
 if [[ -n "$ZSH_DEBUGRC" ]]; then
     zprof
 fi
-
