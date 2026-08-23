@@ -6,15 +6,35 @@
     "bindings": {
       "cmd-k cmd-f": "editor::Format",
       "cmd-;": "editor::ToggleComments",
-      "cmd-shift-v": "markdown::OpenPreviewToTheSide" 
+      "cmd-shift-v": "markdown::OpenPreviewToTheSide"
     }
   },
   {
     "context": "Editor && vim_mode == normal && !menu",
     "bindings": {
       "space": ["workspace::SendKeystrokes", ":"],
-      "shift-j": ["workspace::SendKeystrokes", "down down down down down down down down down down down down down down down"],
-      "shift-k": ["workspace::SendKeystrokes", "up up up up up up up up up up up up up up up"]
+      "shift-j": [
+        "workspace::SendKeystrokes",
+        "down down down down down down down down down down down down down down down"
+      ],
+      "shift-k": [
+        "workspace::SendKeystrokes",
+        "up up up up up up up up up up up up up up up"
+      ]
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-j": "menu::SelectNext",
+      "ctrl-k": "menu::SelectPrevious"
+    }
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "use_key_equivalents": true,
+    "bindings": {
+      "ctrl-k": "editor::ContextMenuPrevious",
+      "ctrl-j": "editor::ContextMenuNext",
     }
   }
 ]

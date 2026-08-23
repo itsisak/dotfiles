@@ -1,4 +1,6 @@
 # This is Git's per-user configuration file.
+[include]
+    path = hei
 [user]
 	email = isakbendresen@gmail.com
 	name = Isak Berg Endresen

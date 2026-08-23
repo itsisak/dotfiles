@@ -8,7 +8,7 @@ function with_loading_parallel() {
     help() {
         h_print() { printf "  %-10s %-18s %-50s\n" "$@" }
         echo
-        echo "Usage: with_loading_parallel [options] [command_as_string ...]" 
+        echo "Usage: with_loading_parallel [options] [command_as_string ...]"
         echo
         echo "Run jobs in parallel with indidividual loading indicators"
         echo
@@ -25,7 +25,7 @@ function with_loading_parallel() {
         h_print "-h"            "--help"            "Print this help and exit"
         h_print ""              "--"                "End of flags"
     }
-    
+
     local spin_str="⏳⌛️"
     local spin_str_length=2
     local speed=0.2
@@ -94,8 +94,8 @@ function with_loading_parallel() {
         help
         exit 1
     fi
-    
-    # Setup 
+
+    # Setup
     local cmds=($argv)
     local cmds_size=$#
     local tmp_file="/tmp/with_loading_parallel_output_$$"
@@ -108,7 +108,7 @@ function with_loading_parallel() {
     else
         messages=($argv)
     fi
-    
+
     # Helper functions
     out() {
         [[ -z $quiet ]] && printf "$@"
@@ -142,17 +142,17 @@ function with_loading_parallel() {
         exit
     }
     trap handle_interrupt INT
-    
+
     # Start jobs
     for i in {1..$cmds_size}; do
         outf "${messages[i]}" "${spin_str:0:1}"
         eval "${cmds[i]}" >>"$tmp_file" 2>/dev/null &
         pids[$i]="$!"
     done
-     
+
     # Show loading
-    local i=0 
-    while any_pid_is_active; do 
+    local i=0
+    while any_pid_is_active; do
         i=$(( (i+1) % $spin_str_length ))
         move cuu $cmds_size
         for j in {1..$cmds_size}; do
@@ -174,13 +174,13 @@ function with_loading_parallel() {
             outf "${messages[j]}" "$done_str"
         fi
     done
-    
+
     # Print output of jobs
-    if [[ -v $out ]]; then 
+    if [[ -v $out ]]; then
         move cuu $cmds_size
         cat $tmp_file
     fi
-    
+
     if [[ -n $bind_func ]]; then
         local output=$(<$tmp_file)
         if [[ "$bind_func" == *"{}"* ]]; then
@@ -189,7 +189,7 @@ function with_loading_parallel() {
         # echo "$bind_func"
         eval "$bind_func"
     fi
-    
+
     # Cleanup
     rm -f "$tmp_file"
     tput cnorm
@@ -206,8 +206,8 @@ with_loading() {
     local spin_str_length=2
     local speed=0.2
     local done_str="🎉"
-   
-    # Parse flags 
+
+    # Parse flags
     for i in "$@"; do
         case $i in
             -d=*|--done=*)
@@ -234,28 +234,34 @@ with_loading() {
     local i=0
     local cmd="$@"
     local temp_file="/tmp/${cmd// /_}.$$"
-   
-    # Hide cursor during loading 
+
+    # Hide cursor during loading
     trap 'tput cnorm' EXIT
     tput civis
 
     pid=$( ("$@") > "$temp_file" & echo $! )
 
     #printf "\n"
+    if [ -n "${msg+x}" ]; then
+        printf "$msg"
+    else
+        printf "\033[30;1m${cmd:-""}"
+    fi
     while kill -0 $pid 2>/dev/null; do
         i=$(( (i+1) % $spin_str_length ))
         #printf "\r\033[A"
-        if [ -n "${msg+x}" ]; then
-            printf "$msg"
-        else
-            printf "\033[30;1m\$${cmd:-""}" 
-        fi
-        printf "${spin_str:$i:1} \033[0m\033[s\r\033[B"
+        printf "\033[s"
+        #printf "${spin_str:$i:1} \033[0m\033[s\r\033[B"
+        printf "%s\033[0m" " ${spin_str:$i:1}"
+        printf "\033[u"
         sleep $speed
     done
-    
-    [[ -n $done_str ]] && printf "\033[u\b\b\b$done_str\n" || printf "%-30s %-15s" $name $id
-    
+
+    # [[ -n $done_str ]] && printf "\033[u\b\b\b$done_str\n" || printf "%-30s %-15s" $name $id
+    [[ -n $done_str ]] \
+        && printf "\033[u\033[K%s\n" " $done_str" \
+        || printf "\033[u\033[K%-30s %-15s\n" "$name" "$id"
+
     WITH_LOADING_RESULT=$(< "$temp_file")
     rm -f "$temp_file"
-} 
+}

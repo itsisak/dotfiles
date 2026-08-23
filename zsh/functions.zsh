@@ -137,7 +137,7 @@ function brew_search_and_install() {
         local formula=${package// /}
         brew_install=("brew" "install" "--formula" "$formula")
     fi
-    [[ $flag == "-v" ]] && _exec "${brew_install[@]}" || with_loading --done "${brew_install[@]}"
+    [[ $flag == "-v" ]] && _exec "${brew_install[@]}" || with_loading -- "${brew_install[@]}"
     printf "Installation was successfull! ✅\n"
 } 
 # Prompt before install
@@ -222,11 +222,63 @@ function brew_list() {
     local package=$(echo "$formulae\n$casks" | fzf --preview="echo '{1}\n' && $preview_command" --preview-window="40%" --padding="0")
 }
 
+local _GIT_SHOW_FORMAT='git show --no-patch --format="%ad%n%an <%ae>" $(echo {} | awk "{print \$1}")'
 
 function fuzzy_git_log() {
     local commit=$(git log --oneline | \
-        fzf --preview 'git show --no-patch --format="%ad%n%an <%ae>" $(echo {} | awk "{print \$1}")')
+        fzf --preview $_GIT_SHOW_FORMAT)
     printf "\033[0;36mCheckout\033[0m - $commit\n"
     git checkout $(echo $commit | awk "{print \$1}")
 }
 
+function fuzzy_git_branch() {
+    local branch=$(git branch \
+        --format='%(objectname:short) %(refname:short)' \
+        --list "${1}*" \
+        --sort=-committerdate | \
+            fzf --preview $_GIT_SHOW_FORMAT | \
+            awk "{print \$2}")
+    if [[ -n $branch ]]; then
+        git checkout $branch
+    fi
+}
+
+function fuzzy_git_branch_remote() {
+    echo "nah"
+    return;
+    local branch=$(git branch \
+        --format='%(objectname:short) %(refname:short)' \
+        --list "${1}*" \
+        --remote \
+        --sort=-committerdate | \
+            fzf --preview $_GIT_SHOW_FORMAT | \
+            awk "{print \$2}")
+    if [[ -n $branch ]]; then
+        git checkout $branch
+    fi
+}
+
+function pbwc() {
+    pbpaste | detex | wc "$@"
+}
+
+# function yarn() {
+    #local yarn=0 npm=0 pnpm=0 bun=0
+
+    #[[ -f "yarn.lock" ]] && yarn=1
+    #[[ -f "package-lock.json" ]] && npm=1
+    #[[ -f "pnpm-lock.yaml" ]] && pnpm=1
+    #[[ -f "pnpm-lock.yml" ]] && pnpm=1
+    #[[ -f "bun.lock" ]] &&  bun=1   
+    
+    #local tot=$(( yarn + npm + pnpm + bun ))
+    #if (( $tot != 1 )); then
+        #echo "$tot lockfiles found, exiting.."
+        #return 1;
+    #fi
+
+    #(( $yarn )) && yarn "$@"
+    #(( $npm )) && npm run "$@"
+    #(( $pnpm )) && pnpm "$@"
+    #(( $bun )) && bun "$@"
+#}

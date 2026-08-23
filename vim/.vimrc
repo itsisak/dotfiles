@@ -24,6 +24,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'pangloss/vim-javascript'          " JavaScript support
     Plug 'leafgarland/typescript-vim'       " TypeScript syntax
     Plug 'maxmellon/vim-jsx-pretty'         " JS and JSX syntax
+    Plug 'ziglang/zig.vim'                  " Zig syntax
+    Plug 'kaarmu/typst.vim'                 " Typst language support
 call plug#end()
 
 let NERDTreeShowHidden                      = 1
@@ -35,7 +37,8 @@ if has('termguicolors')
  set termguicolors                          " Better colors (required for current colorscheme)
 endif
 
-colorscheme catppuccin_macchiato
+
+colorscheme catppuccin_mocha
 
 filetype on                                 " Enable type file detection. Vim will be able to try to detect the type of file is use.
 filetype plugin on                          " Enable plugins and load plugin for the detected file type.
@@ -60,7 +63,7 @@ set showcmd                                 " Show partial command you type in t
 set showmatch                               " Show matching words during a search.
 set noshowmode                              " Do not show current mode in command line (opposite of showmode).
 set shortmess+=F                            " Do not echo file name to commandline.
-set clipboard=unnamedplus                   " Make vim always use system clipboard
+" set clipboard=unnamedplus                   " Make vim always use system clipboard
 set hlsearch                                " Use highlighting when doing a search.
 set history=1000                            " Set the commands to save in history default number is 20.
 set wildmenu                                " Enable auto completion menu after pressing TAB.
@@ -78,6 +81,17 @@ set wildignore=                             " Ignore files, do not open in vim.
     \ *.xlsx
 set exrc                                    " Search projects for local .vimrc files.
 set secure                                  " Prevent 'autocmd', shell and write commands in local .vimrc files.
+
+let g:vimtex_compiler_latexmk = {
+    \ 'options' : [
+    \   '-pdf',
+    \   '-shell-escape',
+    \   '-verbose',
+    \   '-file-line-error',
+    \   '-synctex=1',
+    \   '-interaction=nonstopmode',
+    \ ],
+    \}
 
 autocmd BufNewFile,BufRead *
     \ setlocal formatoptions-=ro            " Do not insert comment on newline
